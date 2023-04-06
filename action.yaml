@@ -30,6 +30,10 @@ inputs:
     description: 'Provision VM (if set to false, only given test cmd is going to be run)'
     required: true
     default: 'true'
+  org:
+    description: 'org where images are stored'
+    required: false
+    default: 'lvh-images'
   dns-resolver:
     description: 'Set DNS resolver in /etc/resolv.conf of a VM'
     required: false
@@ -103,7 +107,7 @@ runs:
       shell: bash
       run: |
         sudo mkdir /_images; sudo chmod 777 /_images
-        docker run -v /_images:/mnt/images quay.io/lvh-images/${{ inputs.image }}:${{ inputs.image-version }} cp /data/images/${{ steps.derive-image-name.outputs.image-name }}.qcow2.zst /mnt/images
+        docker run -v /_images:/mnt/images quay.io/${{ inputs.org }}/${{ inputs.image }}:${{ inputs.image-version }} cp /data/images/${{ steps.derive-image-name.outputs.image-name }}.qcow2.zst /mnt/images
 
     - name: Prepare VM image
       if: ${{ inputs.provision == 'true'  }}
